@@ -1,0 +1,118 @@
+{{define "assets.tmpl"}}
+<!DOCTYPE html>
+<html dir="{{.Dir}}" lang="{{.HTMLLang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>{{index .L "title_assets"}} · {{index .L "meta_title_suffix"}}</title>
+  <link rel="stylesheet" href="/static/app.css?{{ts}}">
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+</head>
+<body class="app app-shell page-assets">
+  {{template "nav_main" .}}
+  {{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+  <main class="wrap">
+    <h1>{{index .L "assets_heading"}}</h1>
+    <p class="sub">{{.PriceUnit}} <span class="hint">({{.clockSuffix}})</span></p>
+
+    <div id="goldbar">
+      <section class="card">
+        <h2>{{index .L "assets_gold_market"}}</h2>
+        {{if .HasQuote}}
+        <p class="kpi">{{printf "%.0f" .Price}} <small>{{index .L "assets_price_sub"}}</small></p>
+        <p class="hint">{{.GoldLine24}}</p>
+        {{else}}
+        <p class="sub">{{index .L "assets_no_price"}}</p>
+        {{end}}
+        <form class="compact" method="post" action="/assets/refresh-gold" hx-post="/assets/refresh-gold" hx-target="#goldbar" hx-swap="outerHTML">
+          <button type="submit" class="secondary">{{index .L "assets_refresh"}}</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="row">
+      <section class="card">
+        <h2>{{index .L "assets_totals"}}</h2>
+        <p class="kpi" style="font-size:1rem">
+          {{index .L "assets_lbl_cash"}}: {{formatRial .SumRial}}<br>
+          {{index .L "assets_lbl_gold"}}: {{formatMg .SumGoldMg}} {{index .L "word_mg"}}<br>
+          {{index .L "assets_lbl_goldval"}}: ≈ {{formatRial .GoldRial}} {{index .L "rial_unit"}}
+        </p>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>{{index .L "assets_add_rial"}}</h2>
+      <form class="compact" method="post" action="/assets/rial">
+        <div class="field">
+          <label for="r-label">{{index .L "assets_label"}}</label>
+          <input id="r-label" name="label" type="text" placeholder="{{index .L "assets_ph_wallet"}}" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="r-amt">{{index .L "assets_amt_rial"}}</label>
+          <input id="r-amt" name="amount" type="text" inputmode="numeric" required>
+        </div>
+        <button type="submit">{{index .L "assets_btn_rial"}}</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>{{index .L "assets_add_gold"}}</h2>
+      <form class="compact" method="post" action="/assets/gold">
+        <div class="field">
+          <label for="g-label">{{index .L "assets_label"}}</label>
+          <input id="g-label" name="label" type="text" placeholder="{{index .L "assets_ph_physical"}}" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="g-mg">{{index .L "assets_amt_mg"}}</label>
+          <input id="g-mg" name="gold_mg" type="text" inputmode="decimal" required>
+        </div>
+        <button type="submit">{{index .L "assets_btn_gold"}}</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>{{index .L "assets_lines"}}</h2>
+      <div class="table-scroll">
+      <table class="app-table">
+        <thead>
+          <tr>
+            <th>{{index .L "assets_label"}}</th>
+            <th>{{index .L "assets_th_type"}}</th>
+            <th>{{index .L "assets_th_amount"}}</th>
+            <th>{{index .L "assets_th_equiv"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Assets}}
+          <tr>
+            <td>{{.Label}}</td>
+            <td>
+              {{if eq .Kind "rial"}}{{index $.L "kind_rial"}}{{else}}{{index $.L "kind_gold"}}{{end}}
+            </td>
+            <td>
+              {{if eq .Kind "rial"}}{{formatRialN .AmountRial}} {{index $.L "rial_unit"}}
+              {{else}}{{formatMgN .GoldMilligrams}} {{index $.L "word_mg"}}{{end}}
+            </td>
+            <td class="cell-equiv">
+              {{if eq .Kind "rial"}}
+              <span class="equiv-na" aria-hidden="true">—</span>
+              {{else if .GoldRialLine.Valid}}
+              <span class="equiv-val">≈ {{formatRial .GoldRialLine.Int64}} <span class="rial-suffix">{{index $.L "rial_unit"}}</span></span>
+              {{else}}
+              <span class="equiv-na" title="{{index $.L "assets_equiv_need_rate"}}">—</span>
+              {{end}}
+            </td>
+          </tr>
+        {{else}}
+          <tr><td colspan="4" class="sub">{{index .L "assets_no_rows"}}</td></tr>
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </main>
+  <footer class="ft">{{index .L "assets_footer"}}</footer>
+</body>
+</html>
+{{end}}

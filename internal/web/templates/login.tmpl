@@ -1,0 +1,33 @@
+{{define "login.tmpl"}}
+<!DOCTYPE html>
+<html dir="{{.Dir}}" lang="{{.HTMLLang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>{{index .L "title_login"}} · {{index .L "meta_title_suffix"}}</title>
+  <link rel="stylesheet" href="/static/app.css?{{ts}}">
+</head>
+<body class="app app-shell page-login">
+  <header class="top login-top">
+    <a class="brand" href="/login">{{index .L "brand"}}</a>
+    {{template "nav_login_lang" .}}
+  </header>
+  {{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+  <main class="wrap">
+    <h1>{{index .L "login_heading"}}</h1>
+    <p class="sub">{{index .L "login_sub"}}</p>
+    <section class="card">
+      <form class="compact" method="post" action="/login">
+        <input type="hidden" name="next" value="{{.Next}}">
+        <div class="field">
+          <label for="pw">{{index .L "login_password"}}</label>
+          <input id="pw" name="password" type="password" autocomplete="current-password" required autofocus>
+        </div>
+        <button type="submit">{{index .L "login_submit"}}</button>
+      </form>
+    </section>
+  </main>
+  <footer class="ft">{{index .L "login_footer"}}</footer>
+</body>
+</html>
+{{end}}

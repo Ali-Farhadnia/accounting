@@ -1,0 +1,49 @@
+{{define "home.tmpl"}}
+<!DOCTYPE html>
+<html dir="{{.Dir}}" lang="{{.HTMLLang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>{{index .L "title_home"}} · {{index .L "meta_title_suffix"}}</title>
+  <link rel="stylesheet" href="/static/app.css?{{ts}}">
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+</head>
+<body class="app app-shell page-home">
+  {{template "nav_main" .}}
+  {{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+  <main class="wrap">
+    <h1>{{index .L "home_heading"}}</h1>
+    <p class="sub">{{.QuoteNote}} <span class="hint">({{.SubTimes}})</span></p>
+    <div class="row">
+      <section class="card">
+        <h2>{{index .L "home_cash"}}</h2>
+        <p class="kpi">{{formatRial .RialAssets}}<small>{{index .L "home_cash_sub"}}</small></p>
+      </section>
+      <section class="card">
+        <h2>{{index .L "home_gold"}}</h2>
+        <p class="kpi">{{formatMg .GoldMg}}<small>{{index .L "word_mg"}} · ≈ {{formatRial .GoldRial}} {{index .L "rial_unit"}}</small></p>
+      </section>
+    </div>
+    <section class="card">
+      <h2>{{index .L "home_total"}}</h2>
+      <p class="kpi">{{formatRial .TotalEquiv}}<small>{{.TotalSub}}</small></p>
+    </section>
+    <div class="row">
+      <section class="card">
+        <h2>{{index .L "home_income"}}</h2>
+        <p class="kpi" style="color:var(--good)">{{formatRial .Income}}</p>
+      </section>
+      <section class="card">
+        <h2>{{index .L "home_expense"}}</h2>
+        <p class="kpi" style="color:var(--bad)">{{formatRial .Expense}}</p>
+      </section>
+    </div>
+    <section class="card">
+      <h2>{{index .L "home_net"}}</h2>
+      <p class="kpi">{{formatRial .NetFlow}}</p>
+    </section>
+  </main>
+  <footer class="ft">{{index .L "home_footer"}}</footer>
+</body>
+</html>
+{{end}}

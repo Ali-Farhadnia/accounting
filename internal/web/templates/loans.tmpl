@@ -1,0 +1,220 @@
+{{define "loans.tmpl"}}
+<!DOCTYPE html>
+<html dir="{{.Dir}}" lang="{{.HTMLLang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>{{index .L "title_loans"}} · {{index .L "meta_title_suffix"}}</title>
+  <link rel="stylesheet" href="/static/app.css?{{ts}}">
+</head>
+<body class="app app-shell page-loans">
+  {{template "nav_main" .}}
+  {{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+  <main class="wrap">
+    <header class="page-hero">
+      <h1>{{index .L "loans_heading"}}</h1>
+      <p class="sub page-hero__sub">{{.dateZoneSub}}</p>
+    </header>
+
+    {{if .AttentionLine}}
+    <div class="attention-banner" role="status">
+      <span class="attention-badge">{{.UrgentCount}}</span>
+      <span class="attention-text">{{.AttentionLine}}</span>
+    </div>
+    {{end}}
+
+    {{if or .Overdue .DueToday}}
+    <div class="callout urgent loan-urgent-block">
+      <h2 class="h2s">{{index .L "loans_due_soon_title"}}</h2>
+      {{if .Overdue}}
+      <h3 class="h3s bad">{{index .L "loans_overdue"}}</h3>
+      <div class="loan-card-list">
+        {{range .Overdue}}
+        <article class="loan-card loan-card--bad">
+          <div class="loan-card__row1">
+            <span class="pill pill--bad">{{index $.L "loans_pill_overdue"}}</span>
+            <span class="loan-card__amt">{{formatRial .AmountRial}} <span class="rial-suffix">{{index $.L "rial_unit"}}</span></span>
+          </div>
+          <h3 class="loan-card__title">{{.Label}}</h3>
+          <p class="loan-card__when">
+            <span class="loan-card__rel">{{.RelativeDue}}</span>
+            <span class="loan-card__abs" title="{{.DueDate}}">{{.DueDate}}</span>
+          </p>
+          {{if .Note}}<p class="loan-card__note">{{.Note}}</p>{{end}}
+          <div class="loan-card__actions">
+            <form class="iform" method="post" action="/loans/settle"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="sm btn-settle">{{index $.L "loans_btn_settle"}}</button></form>
+            <form class="iform" method="post" action="/loans/delete" onsubmit="return confirm('{{index $.L "loans_js_delete"}}');"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="sm btn-ghost-danger">{{index $.L "loans_btn_delete"}}</button></form>
+          </div>
+        </article>
+        {{end}}
+      </div>
+      {{end}}
+      {{if .DueToday}}
+      <h3 class="h3s warn">{{index .L "loans_due_today"}}</h3>
+      <div class="loan-card-list">
+        {{range .DueToday}}
+        <article class="loan-card loan-card--warn">
+          <div class="loan-card__row1">
+            <span class="pill pill--warn">{{index $.L "loans_pill_today"}}</span>
+            <span class="loan-card__amt">{{formatRial .AmountRial}} <span class="rial-suffix">{{index $.L "rial_unit"}}</span></span>
+          </div>
+          <h3 class="loan-card__title">{{.Label}}</h3>
+          <p class="loan-card__when">
+            <span class="loan-card__rel">{{.RelativeDue}}</span>
+            <span class="loan-card__abs">{{.DueDate}}</span>
+          </p>
+          {{if .Note}}<p class="loan-card__note">{{.Note}}</p>{{end}}
+          <div class="loan-card__actions">
+            <form class="iform" method="post" action="/loans/settle"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="sm btn-settle">{{index $.L "loans_btn_settle"}}</button></form>
+            <form class="iform" method="post" action="/loans/delete" onsubmit="return confirm('{{index $.L "loans_js_delete"}}');"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="sm btn-ghost-danger">{{index $.L "loans_btn_delete"}}</button></form>
+          </div>
+        </article>
+        {{end}}
+      </div>
+      {{end}}
+    </div>
+    {{end}}
+
+    {{if .Upcoming}}
+    <section class="card">
+      <h2>{{index .L "loans_upcoming"}} <span class="sec-hint">({{.UpcomingN}}d)</span></h2>
+      <div class="table-scroll">
+      <table class="data-table table-zebra">
+        <thead>
+          <tr>
+            <th>{{index .L "loans_th_label"}}</th>
+            <th>{{index .L "loans_th_amount"}}</th>
+            <th>{{index .L "loans_th_rel"}}</th>
+            <th>{{index .L "loans_th_due"}}</th>
+            <th>{{index .L "loans_th_actions"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Upcoming}}
+        <tr>
+          <td>{{.Label}}</td>
+          <td>{{formatRial .AmountRial}}</td>
+          <td class="cell-rel">{{.RelativeDue}}</td>
+          <td class="cell-mono">{{.DueDate}}</td>
+          <td class="row-actions">
+            <form class="iform" method="post" action="/loans/settle"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="secondary sm">{{index $.L "loans_btn_settle"}}</button></form>
+            <form class="iform" method="post" action="/loans/delete" onsubmit="return confirm('{{index $.L "loans_js_delete"}}');"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="sm btn-ghost-danger">{{index $.L "loans_btn_delete"}}</button></form>
+          </td>
+        </tr>
+        {{if .Note}}<tr class="subrow"><td colspan="5" class="sub">{{.Note}}</td></tr>{{end}}
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+    {{end}}
+
+    {{if .Later}}
+    <section class="card">
+      <h2>{{index .L "loans_later"}}</h2>
+      <div class="table-scroll">
+      <table class="data-table table-zebra">
+        <thead>
+          <tr>
+            <th>{{index .L "loans_th_label"}}</th>
+            <th>{{index .L "loans_th_amount"}}</th>
+            <th>{{index .L "loans_th_rel"}}</th>
+            <th>{{index .L "loans_th_due"}}</th>
+            <th>{{index .L "loans_th_actions"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Later}}
+        <tr>
+          <td>{{.Label}}</td>
+          <td>{{formatRial .AmountRial}}</td>
+          <td class="cell-rel">{{.RelativeDue}}</td>
+          <td class="cell-mono">{{.DueDate}}</td>
+          <td class="row-actions">
+            <form class="iform" method="post" action="/loans/settle"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="secondary sm">{{index $.L "loans_btn_settle"}}</button></form>
+            <form class="iform" method="post" action="/loans/delete" onsubmit="return confirm('{{index $.L "loans_js_delete"}}');"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="sm btn-ghost-danger">{{index $.L "loans_btn_delete"}}</button></form>
+          </td>
+        </tr>
+        {{if .Note}}<tr class="subrow"><td colspan="5" class="sub">{{.Note}}</td></tr>{{end}}
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+    {{end}}
+
+    {{if .NoLoans}}
+    <div class="empty-state">
+      <div class="empty-state__icon" aria-hidden="true">◌</div>
+      <p class="empty-state__title">{{index .L "loans_all_clear"}}</p>
+      <p class="empty-state__sub">{{index .L "loans_empty_hint"}}</p>
+      <p><a class="empty-state__cta" href="#add-loan">{{index .L "loans_cta_add"}}</a></p>
+    </div>
+    {{end}}
+
+    <section class="card form-loan" id="add-loan">
+      <h2>{{index .L "loans_add_new"}}</h2>
+      <form class="compact" method="post" action="/loans">
+        <div class="field field-row-2">
+          <div class="field">
+            <label for="ln-label">{{index .L "loans_lbl_label"}}</label>
+            <input id="ln-label" name="label" type="text" required autocomplete="off" placeholder="{{index .L "loans_ph_label"}}">
+          </div>
+          <div class="field">
+            <label for="ln-amt">{{index .L "loans_lbl_amount"}}</label>
+            <input id="ln-amt" name="amount" type="text" inputmode="numeric" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ln-due">{{index .L "loans_lbl_due"}}</label>
+          <input id="ln-due" name="due" type="date" value="{{.TodayISO}}" max="2099-12-31" required>
+        </div>
+        <p class="hint form-loan__tz">{{index .L "loans_due_help"}} <span class="tz-pill">{{.TZName}}</span></p>
+        <details class="field-details">
+          <summary>{{index .L "loans_add_note_op"}}</summary>
+          <div class="field">
+            <label for="ln-note">{{index .L "loans_lbl_note"}}</label>
+            <input id="ln-note" name="note" type="text" autocomplete="off" placeholder="{{index .L "loans_ph_note"}}">
+          </div>
+        </details>
+        <button type="submit" class="btn-primary-loan">{{index .L "loans_btn_add"}}</button>
+      </form>
+    </section>
+
+    {{if .Settled}}
+    <section class="card">
+      <h2>{{index .L "loans_settled"}}</h2>
+      <div class="table-scroll">
+      <table class="data-table table-zebra table-muted">
+        <thead>
+          <tr>
+            <th>{{index .L "loans_th_label"}}</th>
+            <th>{{index .L "loans_th_amount"}}</th>
+            <th>{{index .L "loans_th_rel"}}</th>
+            <th>{{index .L "loans_th_due"}}</th>
+            <th>{{index .L "loans_th_actions"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Settled}}
+        <tr>
+          <td>{{.Label}}</td>
+          <td>{{formatRial .AmountRial}}</td>
+          <td class="cell-rel">{{.RelativeDue}}</td>
+          <td class="cell-mono">{{.DueDate}}</td>
+          <td>
+            <form class="iform" method="post" action="/loans/delete" onsubmit="return confirm('{{index $.L "loans_js_delete"}}');"><input type="hidden" name="id" value="{{.ID}}"><button type="submit" class="sm btn-ghost-danger">{{index $.L "loans_btn_delete"}}</button></form>
+          </td>
+        </tr>
+        {{if .Note}}<tr class="subrow"><td colspan="5" class="sub">{{.Note}}</td></tr>{{end}}
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+    {{end}}
+  </main>
+  <footer class="ft">{{index .L "loans_footer"}}</footer>
+</body>
+</html>
+{{end}}

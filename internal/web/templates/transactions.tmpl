@@ -1,0 +1,89 @@
+{{define "transactions.tmpl"}}
+<!DOCTYPE html>
+<html dir="{{.Dir}}" lang="{{.HTMLLang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>{{index .L "title_transactions"}} · {{index .L "meta_title_suffix"}}</title>
+  <link rel="stylesheet" href="/static/app.css?{{ts}}">
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+</head>
+<body class="app app-shell page-txns">
+  {{template "nav_main" .}}
+  {{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+  <main class="wrap">
+    <h1>{{index .L "tx_heading"}}</h1>
+    <p class="sub">{{index .L "tx_sub"}} <span class="hint">{{.dateZoneSuffix}}</span></p>
+
+    <section class="card">
+      <h2>{{index .L "tx_new"}}</h2>
+      <form class="compact" method="post" action="/transactions">
+        <div class="field">
+          <label for="kind">{{index .L "tx_type"}}</label>
+          <select id="kind" name="kind" required>
+            <option value="income">{{index .L "tx_opt_in"}}</option>
+            <option value="expense" selected>{{index .L "tx_opt_out"}}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="amt">{{index .L "tx_amount"}}</label>
+          <input id="amt" name="amount" type="text" inputmode="numeric" required>
+        </div>
+        <div class="field">
+          <label for="cat">{{index .L "tx_category"}}</label>
+          <input id="cat" name="category" type="text" placeholder="{{index .L "tx_ph_food"}}" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="src">{{index .L "tx_source"}}</label>
+          <input id="src" name="source" type="text" placeholder="{{index .L "tx_ph_source"}}" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="on">{{index .L "tx_date"}}</label>
+          <input id="on" name="occurred_on" type="date" value="{{.Today}}" required>
+        </div>
+        <div class="field">
+          <label for="note">{{index .L "tx_note"}}</label>
+          <textarea id="note" name="note" rows="2"></textarea>
+        </div>
+        <button type="submit">{{index .L "tx_save"}}</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>{{index .L "tx_recent"}}</h2>
+      <div class="table-scroll">
+      <table class="app-table">
+        <thead>
+          <tr>
+            <th>{{index .L "tx_th_date"}}</th>
+            <th></th>
+            <th>{{index .L "tx_th_amt"}}</th>
+            <th>{{index .L "tx_th_cat"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Transactions}}
+          <tr>
+            <td>{{localDate .OccurredOn}}</td>
+            <td>
+              {{if isIncome .Kind}}<span class="pill income">{{index $.L "tx_pill_in"}}</span>{{end}}
+              {{if isExpense .Kind}}<span class="pill expense">{{index $.L "tx_pill_out"}}</span>{{end}}
+            </td>
+            <td>{{formatRial .AmountRial}}</td>
+            <td>
+              <strong>{{.Category}}</strong>
+              <div class="hint">{{.Source}} {{if .Note}}· {{.Note}}{{end}}</div>
+            </td>
+          </tr>
+        {{else}}
+          <tr><td colspan="4" class="sub">{{index .L "tx_empty"}}</td></tr>
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </main>
+  <footer class="ft">{{index .L "tx_footer"}}</footer>
+</body>
+</html>
+{{end}}

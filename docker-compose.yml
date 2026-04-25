@@ -1,0 +1,16 @@
+services:
+  accounting:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      ACCOUNTING_HTTP_ADDR: :8080
+      ACCOUNTING_DB: /data/app.db
+      ACCOUNTING_PASSWORD: ${ACCOUNTING_PASSWORD:-changeme}
+      ACCOUNTING_AUTH_KEY: ${ACCOUNTING_AUTH_KEY:-}
+      ACCOUNTING_TZ: ${ACCOUNTING_TZ:-Asia/Tehran}
+      ACCOUNTING_LANG: ${ACCOUNTING_LANG:-fa}
+    volumes:
+      - acct-data:/data
+volumes:
+  acct-data:

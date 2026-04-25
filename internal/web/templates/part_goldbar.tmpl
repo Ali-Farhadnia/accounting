@@ -1,0 +1,16 @@
+{{define "part_goldbar.tmpl"}}
+<div id="goldbar">
+  <section class="card">
+    <h2>{{index .L "assets_gold_market"}}</h2>
+    {{if .HasQuote}}
+    <p class="kpi">{{printf "%.0f" .Price}} <small>{{index .L "assets_price_sub"}}</small></p>
+    <p class="hint">{{.GoldLine24}}</p>
+    {{else}}
+    <p class="sub">{{index .L "gold_no_fetch"}}</p>
+    {{end}}
+    <form class="compact" method="post" action="/assets/refresh-gold" hx-post="/assets/refresh-gold" hx-target="#goldbar" hx-swap="outerHTML">
+      <button type="submit" class="secondary">{{index .L "assets_refresh"}}</button>
+    </form>
+  </section>
+</div>
+{{end}}

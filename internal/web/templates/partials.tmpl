@@ -1,0 +1,26 @@
+{{define "nav_main"}}
+<header class="top">
+  <a class="brand" href="/">{{index .L "brand"}}</a>
+  <div class="toprow">
+    <nav class="nav">
+      <a class="{{if eq .Tab "home"}}on{{end}}" href="/">{{index .L "nav_home"}}</a>
+      <a class="{{if eq .Tab "assets"}}on{{end}}" href="/assets">{{index .L "nav_assets"}}</a>
+      <a class="{{if eq .Tab "txns"}}on{{end}}" href="/transactions">{{index .L "nav_txns"}}</a>
+      <a class="{{if eq .Tab "reports"}}on{{end}}" href="/reports">{{index .L "nav_reports"}}</a>
+      <a class="{{if eq .Tab "loans"}}on{{end}}" href="/loans">{{index .L "nav_loans"}}</a>
+      <a href="/logout">{{index .L "nav_logout"}}</a>
+    </nav>
+    <div class="lang">
+      <a class="{{if eq .Lang "en"}}on{{end}}" href="{{.URLLangEN}}">{{index .L "lang_en"}}</a>
+      <a class="{{if eq .Lang "fa"}}on{{end}}" href="{{.URLLangFA}}">{{index .L "lang_fa"}}</a>
+    </div>
+  </div>
+</header>
+{{end}}
+
+{{define "nav_login_lang"}}
+<div class="lang lang-bar">
+  <a class="{{if eq .Lang "en"}}on{{end}}" href="{{.URLLangEN}}">{{index .L "lang_en"}}</a>
+  <a class="{{if eq .Lang "fa"}}on{{end}}" href="{{.URLLangFA}}">{{index .L "lang_fa"}}</a>
+</div>
+{{end}}

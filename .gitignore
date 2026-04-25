@@ -1,0 +1,29 @@
+# Local secrets and env
+.env
+.env.local
+.env.*.local
+
+# Dependencies (regenerate with: go mod vendor)
+/vendor/
+
+# Build outputs
+/build/
+/bin/
+dist/
+accounting
+*.exe
+
+# App data and SQLite (local only)
+data/
+*.db
+
+# Test / profile
+*.out
+cpu.prof
+mem.prof
+
+# Editor / OS
+.DS_Store
+*.swp
+*.swo
+*~

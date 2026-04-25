@@ -1,0 +1,109 @@
+{{define "reports.tmpl"}}
+<!DOCTYPE html>
+<html dir="{{.Dir}}" lang="{{.HTMLLang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>{{index .L "title_reports"}} · {{index .L "meta_title_suffix"}}</title>
+  <link rel="stylesheet" href="/static/app.css?{{ts}}">
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+</head>
+<body class="app app-shell page-reports">
+  {{template "nav_main" .}}
+  {{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+  <main class="wrap">
+    <h1>{{index .L "rep_heading"}}</h1>
+    <p class="sub hint">{{.repMonthSub}}</p>
+    <section class="card">
+      <h2>{{index .L "rep_all_time"}}</h2>
+      <p class="kpi" style="font-size:1rem">
+        {{index .L "rep_lbl_income"}}: <span style="color:var(--good)">{{formatRial .Income}}</span><br>
+        {{index .L "rep_lbl_expense"}}: <span style="color:var(--bad)">{{formatRial .Expense}}</span><br>
+        {{index .L "rep_lbl_net"}}: {{formatRial .Net}}
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>{{index .L "rep_by_month"}}</h2>
+      <div class="table-scroll">
+      <table class="app-table">
+        <thead>
+          <tr>
+            <th>{{index .L "rep_th_month"}}</th>
+            <th>{{index .L "rep_th_in"}}</th>
+            <th>{{index .L "rep_th_out"}}</th>
+            <th>{{index .L "rep_th_net"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Months}}
+          <tr>
+            <td>{{.Month}}</td>
+            <td class="num-in">{{formatRial .Income}}</td>
+            <td class="num-out">{{formatRial .Expense}}</td>
+            <td>{{formatRial (sub .Income .Expense)}}</td>
+          </tr>
+        {{else}}
+          <tr><td colspan="4" class="sub">{{index .L "rep_no_months"}}</td></tr>
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>{{index .L "rep_by_source"}}</h2>
+      <div class="table-scroll">
+      <table class="app-table">
+        <thead>
+          <tr>
+            <th>{{index .L "rep_th_source"}}</th>
+            <th>{{index .L "rep_th_in"}}</th>
+            <th>{{index .L "rep_th_out"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Source}}
+          <tr>
+            <td>{{if .Source}}{{.Source}}{{else}}<span class="sub">{{index $.L "rep_empty"}}</span>{{end}}</td>
+            <td class="num-in">{{formatRial .Income}}</td>
+            <td class="num-out">{{formatRial .Expense}}</td>
+          </tr>
+        {{else}}
+          <tr><td colspan="3" class="sub">{{index .L "rep_no_data"}}</td></tr>
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>{{index .L "rep_by_category"}}</h2>
+      <div class="table-scroll">
+      <table class="app-table">
+        <thead>
+          <tr>
+            <th>{{index .L "rep_th_category"}}</th>
+            <th>{{index .L "rep_th_in"}}</th>
+            <th>{{index .L "rep_th_out"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Category}}
+          <tr>
+            <td>{{if .Category}}{{.Category}}{{else}}<span class="sub">{{index $.L "rep_empty"}}</span>{{end}}</td>
+            <td class="num-in">{{formatRial .Income}}</td>
+            <td class="num-out">{{formatRial .Expense}}</td>
+          </tr>
+        {{else}}
+          <tr><td colspan="3" class="sub">{{index .L "rep_no_data"}}</td></tr>
+        {{end}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </main>
+  <footer class="ft">{{index .L "rep_footer"}}</footer>
+</body>
+</html>
+{{end}}

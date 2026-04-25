@@ -1,0 +1,8 @@
+.git
+.env
+.cursor
+*.db
+data
+terminals
+/tmp
+/vendor
