@@ -124,3 +124,7 @@ Then use `sudo systemctl status accounting`, `sudo systemctl restart accounting`
 
 - **`vendor/`** is not committed; run **`go mod vendor`** if you want offline builds, then **`go build -mod=vendor`**. Docker builds run **`go mod download`** from `go.sum`.
 - After changing `ACCOUNTING_PASSWORD`, users simply use the new password. Changing `ACCOUNTING_AUTH_KEY` invalidates existing sessions (cookies).
+
+## License
+
+[MIT](LICENSE). You may replace “accounting contributors” in `LICENSE` with your name if you prefer.
